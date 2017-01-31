@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Весовой драйвер</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Настройки</string>
+    <string name="scanner_subtitle_not_bonded">Новые</string>
+    <string name="scanner_subtitle_bonded">Сопряженные</string>
+    <string name="not_available">Не доступные</string>
+    <string name="scanner_title">Доступные устройства</string>
+    <string name="no_required_permission">Нет прав</string>
+    <string name="scanner_action_cancel">Отмена</string>
+    <string name="scanner_action_scan">Поиск</string>
+    <string name="btn_connect">Подключиться</string>
+</resources>
