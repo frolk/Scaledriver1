@@ -23,4 +23,34 @@
         android:onClick="onConnectClicked"
         android:id="@+id/action_connect"/>
 
+    <TextView
+        android:text="no data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/action_connect"
+        android:id="@+id/tvData"
+       />
+
+    <Button
+        android:text="Send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etSend"
+        android:layout_alignStart="@+id/tvData"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="21dp"
+        android:id="@+id/btnSend"
+        android:onClick="sendClick"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text=""
+        android:ems="10"
+        android:id="@+id/etSend"
+        android:layout_below="@+id/tvData"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

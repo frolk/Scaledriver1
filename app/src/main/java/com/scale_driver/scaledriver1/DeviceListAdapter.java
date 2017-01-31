@@ -52,10 +52,6 @@ public class DeviceListAdapter extends BaseAdapter {
 		mContext = context;
 	}
 
-	/**
-	 * Sets a list of bonded devices.
-	 * @param devices list of bonded devices.
-	 */
 	public void addBondedDevices(final Set<BluetoothDevice> devices) {
 		final List<ExtendedBluetoothDevice> bondedDevices = mListBondedValues;
 		for (BluetoothDevice device : devices) {
