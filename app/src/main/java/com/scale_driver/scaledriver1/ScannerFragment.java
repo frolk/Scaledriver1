@@ -143,15 +143,15 @@ public class ScannerFragment extends DialogFragment {
 
 		mPermissionRationale = dialogView.findViewById(R.id.permission_rationale); // this is not null only on API23+
 
-		mScanButton = (Button) dialogView.findViewById(R.id.action_cancel);
-		mScanButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (v.getId() == R.id.action_cancel) {
-					if (mIsScanning) {
-						dialog.cancel();
-					} else {
-						startScan();
+						mScanButton = (Button) dialogView.findViewById(R.id.action_cancel);
+						mScanButton.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								if (v.getId() == R.id.action_cancel) {
+									if (mIsScanning) {
+										dialog.cancel();
+									} else {
+										startScan();
 					}
 				}
 			}
