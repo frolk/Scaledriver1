@@ -209,7 +209,10 @@ public class UartService extends Service {
             return;
         }
         mBluetoothGatt.disconnect();
-        // mBluetoothGatt.close();
+        Utils.showmsg("Service disconnected");
+        //mBluetoothGatt.close();
+        Utils.showmsg("mBluetoothGatt closed");
+
     }
 
     public void close() {

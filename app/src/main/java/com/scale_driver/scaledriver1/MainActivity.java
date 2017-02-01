@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity
     protected static final int REQUEST_ENABLE_BT = 2;
     private UartService mService = null;
     private boolean mDeviceConnected = false;
+    public Handler mHandler;
+    Button btn_connect;
+    private BluetoothDevice mDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,22 +75,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         service_init();
+        mHandler = new Handler() {
+            public void handleMessage(android.os.Message msg) {
+                Toast.makeText(MainActivity.this, msg.what, Toast.LENGTH_SHORT).show();
+            }
+        };
 
-//        btnSend.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                etSend = (EditText) findViewById(R.id.etSend);
-////                String message = etSend.getText().toString();
-////                byte[] value;
-////                try{
-////                    value = message.getBytes("UTF-8");
-////                    mService.writeRXCharacteristic(value);
-////                }catch (UnsupportedEncodingException e){
-////                    e.printStackTrace();
-////                }
-//                Utils.showmsg("you pressed btn");
-//            }
-//        });
+        btn_connect = (Button) findViewById(R.id.action_connect);
     }
 
     @Override
@@ -147,16 +142,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onConnectClicked(View view) {
-        if(isBLEEnabled()){
-            if(!mDeviceConnected){
+        if (isBLEEnabled()) {
+            if (!mDeviceConnected) {
                 showDeviceScanningDialog(null);
+                btn_connect.setText(R.string.btn_disconnect);
+            } else {
+                btn_connect.setText(R.string.btn_connect);
+                mService.disconnect();
+                mDeviceConnected = false;
             }
+
+
         } else showBLEDialog();
     }
 
-
-
-    private void showDeviceScanningDialog (final UUID filter){
+    private void showDeviceScanningDialog(final UUID filter) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -165,25 +165,27 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-        // Check either BLE enabled or not
-    protected boolean isBLEEnabled(){
+
+    // Check either BLE enabled or not
+    protected boolean isBLEEnabled() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         final BluetoothAdapter adapter = bluetoothManager.getAdapter();
         return adapter != null && adapter.isEnabled();
     }
 
-        //Ask user to turn bluetooth on
-    protected void showBLEDialog(){
+    //Ask user to turn bluetooth on
+    protected void showBLEDialog() {
         final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
     }
-        // implemented ScannerFragment method getting info about selected device
+
+    // implemented ScannerFragment method getting info about selected device
     @Override
     public void onDeviceSelected(BluetoothDevice device, String name) {
-        //Toast.makeText(this, "Ты выбрал: " + name, Toast.LENGTH_SHORT).show();
-        mDeviceConnected = true;
 
-        String deviceaddress = device.getAddress();
+
+        mDevice = device;
+        String deviceaddress = mDevice.getAddress();
         mService.connect(deviceaddress);
     }
 
@@ -193,16 +195,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder rawBinder) {
-                mService = ((UartService.LocalBinder) rawBinder).getService();
-                //Log.d(TAG, "onServiceConnected mService= " + mService);
-                Utils.showmsg("onServiceConnected mService= " + mService);
-                if (!mService.initialize()){
-                    Log.e(TAG, "Unable to initialize Bluetooth");
-                    finish();
-                }
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder rawBinder) {
+            mService = ((UartService.LocalBinder) rawBinder).getService();
+            //Log.d(TAG, "onServiceConnected mService= " + mService);
+            Utils.showmsg("onServiceConnected mService= " + mService);
+            if (!mService.initialize()) {
+                Log.e(TAG, "Unable to initialize Bluetooth");
+                finish();
             }
+        }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
@@ -215,15 +217,16 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             final Intent mIntent = intent;
-            if(action.equals(UartService.ACTION_GATT_CONNECTED)){
+            if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(TAG, "Uart connected");
+                        mDeviceConnected = true;
                     }
                 });
             }
-            if(action.equals(UartService.ACTION_GATT_DISCONNECTED)){
+            if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -232,15 +235,15 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
             }
-            if(action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)){
+            if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
                 mService.enableTXNotification();
             }
-            if(action.equals(UartService.ACTION_DATA_AVAILABLE)){
+            if (action.equals(UartService.ACTION_DATA_AVAILABLE)) {
                 final byte[] txValue = intent.getByteArrayExtra(UartService.EXTRA_DATA);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        try{
+                        try {
                             tvData = (TextView) findViewById(R.id.tvData);
                             String text = new String(txValue, "UTF-8");
                             Utils.showmsg(text);
@@ -251,30 +254,31 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
             }
-            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)){
+            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)) {
                 Toast.makeText(context, "Device doesn't support UART. Disconnecting...", Toast.LENGTH_SHORT).show();
                 mService.disconnect();
             }
         }
     };
 
-    private void service_init(){
+    private void service_init() {
         Intent bindIntent = new Intent(this, UartService.class);
         bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
         LocalBroadcastManager.getInstance(this).registerReceiver(UartBroadcastReceiver, Utils.makeGattUpdateIntentFilter());
     }
 
-
     public void sendClick(View view) {
         Utils.showmsg("you pressed btn");
         etSend = (EditText) findViewById(R.id.etSend);
-                String message = etSend.getText().toString();
-                byte[] value;
-                try{
-                    value = message.getBytes("UTF-8");
-                    mService.writeRXCharacteristic(value);
-                }catch (UnsupportedEncodingException e){
-                    e.printStackTrace();
-                }
+        String message = etSend.getText().toString();
+        byte[] value;
+        try {
+            value = message.getBytes("UTF-8");
+            mService.writeRXCharacteristic(value);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
+
+
 }
