@@ -8,9 +8,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 
 import com.scale_driver.scaledriver1.ble_handle.ScannerFragment;
 import com.scale_driver.scaledriver1.ble_handle.Utils;
+import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -40,7 +43,9 @@ public class MainActivity extends AppCompatActivity
 
 
     EditText etSend;
-    TextView tvData;
+    private TextView tvData;
+    Button btn_send;
+    SharedPreferences sp;
 
     private static final String TAG = "myUart";
     protected static final int REQUEST_ENABLE_BT = 2;
@@ -85,6 +90,9 @@ public class MainActivity extends AppCompatActivity
         };
 
         btn_connect = (Button) findViewById(R.id.action_connect);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        tvData = (TextView) findViewById(R.id.tvData);
+
     }
 
     @Override
@@ -95,6 +103,16 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String data = preference.getString("phone_number", "нет номера бро");
+        Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+        tvData.setText(data);
+
     }
 
     @Override
@@ -113,7 +131,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            showSettings();
         }
 
         return super.onOptionsItemSelected(item);
@@ -126,6 +144,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_manage) {
+            showSettings();
 
         } else if (id == R.id.nav_share) {
 
@@ -240,7 +259,6 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void run() {
                         try {
-                            tvData = (TextView) findViewById(R.id.tvData);
                             tx_data = new String(txValue, "UTF-8");
                             Utils.showmsg(tx_data);
                             tvData.setText(tx_data);
@@ -276,4 +294,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void showSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 }

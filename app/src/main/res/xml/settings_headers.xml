@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:fragment="com.scale_driver.scaledriver1.settings.SettingsActivity$GeneralSettingsFragment"
+        android:title="Общие настройки"
+        android:summary="вес,кнопки,дисректность..."/>
+
+    <header
+        android:fragment="com.scale_driver.scaledriver1.settings.SettingsActivity$ArchiveSettingsFragment"
+        android:title="Архив"
+        android:summary="просмотр,редактирование"/>
+
+    <header
+        android:fragment="com.scale_driver.scaledriver1.settings.SettingsActivity$NotifySettingsFragment"
+        android:title="Уведомления"
+        android:summary="смс уведомление"/>
+
+
+
+</preference-headers>

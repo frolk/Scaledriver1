@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showWeight"
+        android:summary="@string/showWeightDecrip"
+        android:title="@string/ShowWeight" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="showBtn"
+        android:summary="Отображает кнопки корректировки"
+        android:title="Показать кнопки" />
+    <EditTextPreference
+        android:title="Дискретность"
+        android:summary="Точность весового индикатора, кг"
+        android:key="diskretnost"
+        android:defaultValue="10"/>
+
+
+</PreferenceScreen>

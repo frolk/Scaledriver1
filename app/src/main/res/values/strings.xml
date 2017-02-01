@@ -20,4 +20,6 @@
     <string name="Tools">Настройки</string>
     <string name="MainTools">Общие настройки</string>
     <string name="drawer_title">Scale driver</string>
+    <string name="ShowWeight">Показывать вес</string>
+    <string name="showWeightDecrip">Отображать вес в окне программы</string>
 </resources>
