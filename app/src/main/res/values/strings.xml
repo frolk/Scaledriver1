@@ -14,4 +14,10 @@
     <string name="scanner_action_scan">Поиск</string>
     <string name="btn_connect">Подключиться</string>
     <string name="btn_disconnect">Отключиться</string>
+    <string name="Archive">Архив</string>
+    <string name="Notify">Уведомления</string>
+    <string name="record">Учет</string>
+    <string name="Tools">Настройки</string>
+    <string name="MainTools">Общие настройки</string>
+    <string name="drawer_title">Scale driver</string>
 </resources>

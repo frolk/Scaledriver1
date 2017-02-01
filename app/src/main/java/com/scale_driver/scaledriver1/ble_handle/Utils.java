@@ -1,7 +1,9 @@
-package com.scale_driver.scaledriver1;
+package com.scale_driver.scaledriver1.ble_handle;
 
 import android.content.IntentFilter;
 import android.util.Log;
+
+import com.scale_driver.scaledriver1.UartService;
 
 public class Utils {
 

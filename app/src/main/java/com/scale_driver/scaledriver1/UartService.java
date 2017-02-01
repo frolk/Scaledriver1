@@ -18,6 +18,8 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.scale_driver.scaledriver1.ble_handle.Utils;
+
 import java.util.List;
 import java.util.UUID;
 

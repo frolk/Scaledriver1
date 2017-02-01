@@ -8,7 +8,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -30,6 +29,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scale_driver.scaledriver1.ble_handle.ScannerFragment;
+import com.scale_driver.scaledriver1.ble_handle.Utils;
+
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private UartService mService = null;
     private boolean mDeviceConnected = false;
     public Handler mHandler;
+    public String tx_data;
     Button btn_connect;
     private BluetoothDevice mDevice;
 
@@ -122,13 +125,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
@@ -205,7 +202,6 @@ public class MainActivity extends AppCompatActivity
                 finish();
             }
         }
-
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mService = null;
@@ -245,9 +241,9 @@ public class MainActivity extends AppCompatActivity
                     public void run() {
                         try {
                             tvData = (TextView) findViewById(R.id.tvData);
-                            String text = new String(txValue, "UTF-8");
-                            Utils.showmsg(text);
-                            tvData.setText(text);
+                            tx_data = new String(txValue, "UTF-8");
+                            Utils.showmsg(tx_data);
+                            tvData.setText(tx_data);
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
                         }
@@ -279,6 +275,5 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
-
 
 }

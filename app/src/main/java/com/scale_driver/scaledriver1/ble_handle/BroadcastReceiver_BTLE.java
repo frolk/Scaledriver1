@@ -1,12 +1,12 @@
-package com.scale_driver.scaledriver1;
+package com.scale_driver.scaledriver1.ble_handle;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
-import com.scale_driver.scaledriver1.MainActivity;
+
+import com.scale_driver.scaledriver1.UartService;
 
 public class BroadcastReceiver_BTLE extends BroadcastReceiver {
 

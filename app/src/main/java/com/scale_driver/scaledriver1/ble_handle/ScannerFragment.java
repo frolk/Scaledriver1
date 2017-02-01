@@ -19,7 +19,7 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.scale_driver.scaledriver1;
+package com.scale_driver.scaledriver1.ble_handle;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -43,6 +43,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.scale_driver.scaledriver1.R;
 
 import java.util.ArrayList;
 import java.util.List;

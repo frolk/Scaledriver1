@@ -19,14 +19,14 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.scale_driver.scaledriver1;
+package com.scale_driver.scaledriver1.ble_handle;
 
 import android.bluetooth.BluetoothDevice;
 
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 public class ExtendedBluetoothDevice {
-	/* package */ static final int NO_RSSI = -1000;
+	final static int NO_RSSI = -1000;
 	public final BluetoothDevice device;
 	/** The name is not parsed by some Android devices, f.e. Sony Xperia Z1 with Android 4.3 (C6903). It needs to be parsed manually. */
 	public String name;
