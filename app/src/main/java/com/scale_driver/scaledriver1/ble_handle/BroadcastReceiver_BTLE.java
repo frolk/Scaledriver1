@@ -25,9 +25,9 @@ public class BroadcastReceiver_BTLE extends BroadcastReceiver {
         final Intent mIntent = intent;
 
         if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
-            //Utils.showmsg("This is from separate Broadcast file. We connected");
+            //BleUtils.showmsg("This is from separate Broadcast file. We connected");
             Toast.makeText(activityContext, "hello man how are you?", Toast.LENGTH_SHORT).show();
-            Utils.showmsg("Connected. Congratulation!!!");
+            BleUtils.showmsg("Connected. Congratulation!!!");
         }
 
         if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
@@ -35,7 +35,7 @@ public class BroadcastReceiver_BTLE extends BroadcastReceiver {
         }
 
         if(action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)){
-            Utils.showmsg("service discovered ++");
+            BleUtils.showmsg("service discovered ++");
 
             //mHandler.sendEmptyMessage(222);
             }
@@ -47,7 +47,7 @@ public class BroadcastReceiver_BTLE extends BroadcastReceiver {
 //            try{
 //                String text = new String(txValue, "UTF-8");
 //                Toast.makeText(activityContext, "text get", Toast.LENGTH_SHORT).show();
-//                Utils.showmsg("text get");
+//                BleUtils.showmsg("text get");
 //            } catch (Exception e) {
 //                Log.e(TAG, e.toString());
 //            }
@@ -60,7 +60,7 @@ public class BroadcastReceiver_BTLE extends BroadcastReceiver {
 //                        try{
 //                            tvData = (TextView) findViewById(R.id.tvData);
 //                            String text = new String(txValue, "UTF-8");
-//                            Utils.showmsg(text);
+//                            BleUtils.showmsg(text);
 //                            tvData.setText(text);
 //                        } catch (Exception e) {
 //                            Log.e(TAG, e.toString());

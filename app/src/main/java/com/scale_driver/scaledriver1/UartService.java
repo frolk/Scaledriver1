@@ -18,7 +18,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.scale_driver.scaledriver1.ble_handle.Utils;
+import com.scale_driver.scaledriver1.ble_handle.BleUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -200,7 +200,7 @@ public class UartService extends Service {
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
-        Utils.showmsg(address);
+        BleUtils.showmsg(address);
         mConnectionState = STATE_CONNECTING;
         return true;
     }
@@ -211,9 +211,9 @@ public class UartService extends Service {
             return;
         }
         mBluetoothGatt.disconnect();
-        Utils.showmsg("Service disconnected");
+        BleUtils.showmsg("Service disconnected");
         //mBluetoothGatt.close();
-        Utils.showmsg("mBluetoothGatt closed");
+        BleUtils.showmsg("mBluetoothGatt closed");
 
     }
 

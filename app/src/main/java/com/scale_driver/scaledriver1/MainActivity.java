@@ -31,8 +31,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scale_driver.scaledriver1.ble_handle.BleUtils;
 import com.scale_driver.scaledriver1.ble_handle.ScannerFragment;
-import com.scale_driver.scaledriver1.ble_handle.Utils;
 import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
 import java.io.UnsupportedEncodingException;
@@ -40,7 +40,6 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ScannerFragment.OnDeviceSelectedListener {
-
 
     EditText etSend;
     private TextView tvData;
@@ -110,7 +109,11 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String data = preference.getString("phone_number", "нет номера бро");
-        Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+        if (preference.getBoolean("showWeight", true)){
+            tvData.setVisibility(View.VISIBLE);
+        } else {
+            tvData.setVisibility(View.INVISIBLE);
+        }
         tvData.setText(data);
 
     }
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity
         public void onServiceConnected(ComponentName componentName, IBinder rawBinder) {
             mService = ((UartService.LocalBinder) rawBinder).getService();
             //Log.d(TAG, "onServiceConnected mService= " + mService);
-            Utils.showmsg("onServiceConnected mService= " + mService);
+            BleUtils.showmsg("onServiceConnected mService= " + mService);
             if (!mService.initialize()) {
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
@@ -260,7 +263,7 @@ public class MainActivity extends AppCompatActivity
                     public void run() {
                         try {
                             tx_data = new String(txValue, "UTF-8");
-                            Utils.showmsg(tx_data);
+                            BleUtils.showmsg(tx_data);
                             tvData.setText(tx_data);
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
@@ -278,19 +281,23 @@ public class MainActivity extends AppCompatActivity
     private void service_init() {
         Intent bindIntent = new Intent(this, UartService.class);
         bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-        LocalBroadcastManager.getInstance(this).registerReceiver(UartBroadcastReceiver, Utils.makeGattUpdateIntentFilter());
+        LocalBroadcastManager.getInstance(this).registerReceiver(UartBroadcastReceiver, BleUtils.makeGattUpdateIntentFilter());
     }
 
     public void sendClick(View view) {
-        Utils.showmsg("you pressed btn");
-        etSend = (EditText) findViewById(R.id.etSend);
-        String message = etSend.getText().toString();
-        byte[] value;
-        try {
-            value = message.getBytes("UTF-8");
-            mService.writeRXCharacteristic(value);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+
+        if (mDeviceConnected) {
+            etSend = (EditText) findViewById(R.id.etSend);
+            String message = etSend.getText().toString();
+            byte[] value;
+            try {
+                value = message.getBytes("UTF-8");
+                mService.writeRXCharacteristic(value);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, R.string.needToConnToDevice, Toast.LENGTH_SHORT).show();
         }
     }
 

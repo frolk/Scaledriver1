@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.scale_driver.scaledriver1.UartService;
 
-public class Utils {
+public class BleUtils {
 
 
 
