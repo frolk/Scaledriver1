@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +17,19 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scale_driver.scaledriver1.MainActivity;
 import com.scale_driver.scaledriver1.R;
 
 
-public class BtnsFragment extends Fragment {
+public class BtnsFragment extends Fragment implements View.OnClickListener {
 
     btnListener mCallBtnBack;
     int correctValue = 0;
-    TextView btnValue;
-    SeekBar seekBarThis;
+    TextView seekText;
+    SeekBar seekBar;
+    Button btnInc, btnDec;
 
+    final private static String TAG = "mLog";
     public static String btnPrefValues = "com.scale_driver.btnValues";
 
     SharedPreferences btnValues;
@@ -67,22 +71,20 @@ public class BtnsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)  {
 
-        final View v = inflater.inflate(R.layout.btns_fragment, null);
+        View v = inflater.inflate(R.layout.btns_fragment,container, false);
 
-        SeekBar seekbar = (SeekBar) v.findViewById(R.id.seekBar);
-        Button btnInc = (Button) v.findViewById(R.id.btnInc);
-        Button btnDec = (Button) v.findViewById(R.id.btnDec);
-        Button button = (Button) v.findViewById(R.id.btn1);
-        correctValue = seekbar.getProgress();
-        final TextView seekText = (TextView) v.findViewById(R.id.seekText);
-        btnValue = seekText;
-        seekBarThis = seekbar;
-
+        seekBar = (SeekBar) v.findViewById(R.id.seekBar);
+        btnInc = (Button) v.findViewById(R.id.btnInc);
+        btnDec = (Button) v.findViewById(R.id.btnDec);
+        btnInc.setOnClickListener(this);
+        btnDec.setOnClickListener(this);
+        Button btn1 = (Button) v.findViewById(R.id.btn1);
+        correctValue = seekBar.getProgress();
+        seekText = (TextView) v.findViewById(R.id.seekText);
         seekText.setText(String.valueOf(correctValue));
-
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 correctValue = i;
@@ -100,36 +102,34 @@ public class BtnsFragment extends Fragment {
             }
         });
 
-
-        btnInc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeText(correctValue++);
-                seekBarThis.setProgress(correctValue);
-            }
-        });
-
-        btnDec.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeText(correctValue--);
-                seekBarThis.setProgress(correctValue);
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
+        btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mCallBtnBack.CorrectBtnClicked("$384&");
+
             }
         });
-
         return v;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btnDec:
+                changeText(correctValue--);
+                seekBar.setProgress(correctValue);
+                break;
+            case R.id.btnInc:
+                changeText(correctValue++);
+                seekBar.setProgress(correctValue);
+                break;
+
+
+        }
+    }
 
     public void changeText(int value){
-        btnValue.setText(String.valueOf(value));
+        seekText.setText(String.valueOf(value));
     }
 
 
