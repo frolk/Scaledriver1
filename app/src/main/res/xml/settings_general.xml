@@ -8,7 +8,7 @@
         android:title="@string/ShowWeight" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="showBtn"
+        android:key="showBtns"
         android:summary="Отображает кнопки корректировки"
         android:title="Показать кнопки" />
     <EditTextPreference

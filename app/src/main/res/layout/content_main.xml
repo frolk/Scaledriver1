@@ -32,6 +32,16 @@
         android:id="@+id/tvData"
        />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text=""
+        android:ems="10"
+        android:id="@+id/etSend"
+        android:layout_below="@+id/tvData"
+        android:layout_alignParentStart="true" />
+
     <Button
         android:text="Send"
         android:layout_width="wrap_content"
@@ -43,14 +53,17 @@
         android:id="@+id/btnSend"
         android:onClick="sendClick"/>
 
-    <EditText
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text=""
-        android:ems="10"
-        android:id="@+id/etSend"
-        android:layout_below="@+id/tvData"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@id/btnSend"
+        android:layout_marginTop="10dp"
+        android:id="@+id/BtnsFrag">
+
+    </FrameLayout>
+
+
 
 </RelativeLayout>

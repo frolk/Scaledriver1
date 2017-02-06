@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -37,27 +38,28 @@ import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
-
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ScannerFragment.OnDeviceSelectedListener {
-
+        implements NavigationView.OnNavigationItemSelectedListener, ScannerFragment.OnDeviceSelectedListener, BtnsFragment.btnListener {
     EditText etSend;
     private TextView tvData;
     Button btn_send;
     SharedPreferences sp;
-
+    BtnsFragment btnsFragment;
+    FragmentTransaction fTrans;
     private static final String TAG = "myUart";
     protected static final int REQUEST_ENABLE_BT = 2;
-    private UartService mService = null;
-    private boolean mDeviceConnected = false;
+    public UartService mService = null;
+    public boolean mDeviceConnected = false;
     public Handler mHandler;
     public String tx_data;
     Button btn_connect;
     private BluetoothDevice mDevice;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        btnsFragment = new BtnsFragment();
+
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -93,7 +95,6 @@ public class MainActivity extends AppCompatActivity
         tvData = (TextView) findViewById(R.id.tvData);
 
     }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -103,28 +104,32 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String data = preference.getString("phone_number", "нет номера бро");
+        Boolean showBtns = preference.getBoolean("showBtns", true);
+        fTrans = getFragmentManager().beginTransaction();
+
+        if(showBtns) {
+            fTrans.add(R.id.BtnsFrag, btnsFragment);
+        } else {
+            fTrans.remove(btnsFragment);
+        }
+        fTrans.commit();
+
         if (preference.getBoolean("showWeight", true)){
             tvData.setVisibility(View.VISIBLE);
         } else {
             tvData.setVisibility(View.INVISIBLE);
         }
-        tvData.setText(data);
-
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -139,7 +144,6 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -159,7 +163,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     public void onConnectClicked(View view) {
         if (isBLEEnabled()) {
             if (!mDeviceConnected) {
@@ -174,7 +177,6 @@ public class MainActivity extends AppCompatActivity
 
         } else showBLEDialog();
     }
-
     private void showDeviceScanningDialog(final UUID filter) {
         runOnUiThread(new Runnable() {
             @Override
@@ -184,20 +186,17 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
     // Check either BLE enabled or not
     protected boolean isBLEEnabled() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         final BluetoothAdapter adapter = bluetoothManager.getAdapter();
         return adapter != null && adapter.isEnabled();
     }
-
     //Ask user to turn bluetooth on
     protected void showBLEDialog() {
         final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
     }
-
     // implemented ScannerFragment method getting info about selected device
     @Override
     public void onDeviceSelected(BluetoothDevice device, String name) {
@@ -207,12 +206,10 @@ public class MainActivity extends AppCompatActivity
         String deviceaddress = mDevice.getAddress();
         mService.connect(deviceaddress);
     }
-
     @Override
     public void onDialogCanceled() {
 
     }
-
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder rawBinder) {
@@ -229,7 +226,6 @@ public class MainActivity extends AppCompatActivity
             mService = null;
         }
     };
-
     private final BroadcastReceiver UartBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -277,32 +273,29 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
-
     private void service_init() {
         Intent bindIntent = new Intent(this, UartService.class);
         bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
         LocalBroadcastManager.getInstance(this).registerReceiver(UartBroadcastReceiver, BleUtils.makeGattUpdateIntentFilter());
     }
-
     public void sendClick(View view) {
 
-        if (mDeviceConnected) {
-            etSend = (EditText) findViewById(R.id.etSend);
-            String message = etSend.getText().toString();
-            byte[] value;
-            try {
-                value = message.getBytes("UTF-8");
-                mService.writeRXCharacteristic(value);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+        etSend = (EditText) findViewById(R.id.etSend);
+        String data = etSend.getText().toString();
+
+        if (!data.equalsIgnoreCase("")) {
+            BleUtils.sendMsgBle(this, mService, data, mDeviceConnected);
         } else {
-            Toast.makeText(this, R.string.needToConnToDevice, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Необходимо ввести текст", Toast.LENGTH_SHORT).show();
         }
     }
-
     public void showSettings(){
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+    @Override
+    public void CorrectBtnClicked(String s) {
+        BleUtils.sendMsgBle(this, mService, s, mDeviceConnected);
+
     }
 }
