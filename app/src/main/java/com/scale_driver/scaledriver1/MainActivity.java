@@ -34,9 +34,9 @@ import android.widget.Toast;
 
 import com.scale_driver.scaledriver1.ble_handle.BleUtils;
 import com.scale_driver.scaledriver1.ble_handle.ScannerFragment;
+import com.scale_driver.scaledriver1.btnsHandle.BtnsFragment;
 import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
-import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity

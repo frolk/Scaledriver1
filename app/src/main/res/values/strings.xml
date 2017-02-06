@@ -23,4 +23,6 @@
     <string name="ShowWeight">Показывать вес</string>
     <string name="showWeightDecrip">Отображать вес в окне программы</string>
     <string name="needToConnToDevice">Устройство не подключено</string>
+    <string name="decSign"><![CDATA[<]]></string>
+    <string name="incSign"><![CDATA[>]]></string>
 </resources>
