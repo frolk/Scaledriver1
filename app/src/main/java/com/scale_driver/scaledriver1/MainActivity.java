@@ -283,11 +283,19 @@ public class MainActivity extends AppCompatActivity
         etSend = (EditText) findViewById(R.id.etSend);
         String data = etSend.getText().toString();
 
-        if (!data.equalsIgnoreCase("")) {
-            BleUtils.sendMsgBle(this, mService, data, mDeviceConnected);
+        if(!data.isEmpty()) {
+            SharedPreferences btns = this.getSharedPreferences(BtnsFragment.btnPrefValues, Context.MODE_PRIVATE);
+            String btnValue = btns.getString(data, "no data");
+            if (!btnValue.equals("no data")) {
+                BleUtils.sendMsgBle(this, mService, btnValue, mDeviceConnected);
+            } else {
+                BleUtils.sendMsgBle(this, mService, data, mDeviceConnected);
+
+            }
         } else {
             Toast.makeText(this, "Необходимо ввести текст", Toast.LENGTH_SHORT).show();
         }
+
     }
     public void showSettings(){
         Intent intent = new Intent(this, SettingsActivity.class);
