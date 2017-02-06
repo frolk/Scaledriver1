@@ -38,6 +38,7 @@ import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ScannerFragment.OnDeviceSelectedListener, BtnsFragment.btnListener {
     EditText etSend;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     Button btn_send;
     SharedPreferences sp;
     BtnsFragment btnsFragment;
+    Boolean fragmentVisible = false;
     FragmentTransaction fTrans;
     private static final String TAG = "myUart";
     protected static final int REQUEST_ENABLE_BT = 2;
@@ -57,9 +59,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         btnsFragment = new BtnsFragment();
-
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,19 +110,22 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Boolean showBtns = preference.getBoolean("showBtns", true);
         fTrans = getFragmentManager().beginTransaction();
+        fTrans.addToBackStack("");
 
-        if(showBtns) {
+        if(showBtns && !fragmentVisible) {
+
+            fragmentVisible = true;
             fTrans.add(R.id.BtnsFrag, btnsFragment);
-        } else {
+            Toast.makeText(this, "show btns", Toast.LENGTH_SHORT).show();
+        }
+        else if (!showBtns && fragmentVisible){
+            fragmentVisible = false;
             fTrans.remove(btnsFragment);
+            Toast.makeText(this, "hide btns", Toast.LENGTH_SHORT).show();
+            //fTrans.remove(btnsFragment);
         }
         fTrans.commit();
 
-        if (preference.getBoolean("showWeight", true)){
-            tvData.setVisibility(View.VISIBLE);
-        } else {
-            tvData.setVisibility(View.INVISIBLE);
-        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -75,4 +75,5 @@ public class BtnsFragment extends Fragment {
 
         return v;
     }
+
 }
