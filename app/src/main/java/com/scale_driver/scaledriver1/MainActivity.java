@@ -116,13 +116,10 @@ public class MainActivity extends AppCompatActivity
 
             fragmentVisible = true;
             fTrans.add(R.id.BtnsFrag, btnsFragment);
-            Toast.makeText(this, "show btns", Toast.LENGTH_SHORT).show();
         }
         else if (!showBtns && fragmentVisible){
             fragmentVisible = false;
             fTrans.remove(btnsFragment);
-            Toast.makeText(this, "hide btns", Toast.LENGTH_SHORT).show();
-            //fTrans.remove(btnsFragment);
         }
         fTrans.commit();
 
@@ -287,14 +284,11 @@ public class MainActivity extends AppCompatActivity
         String data = etSend.getText().toString();
 
         if(!data.isEmpty()) {
-            SharedPreferences btns = this.getSharedPreferences(BtnsFragment.btnPrefValues, Context.MODE_PRIVATE);
-            String btnValue = btns.getString(data, "no data");
-            if (!btnValue.equals("no data")) {
-                BleUtils.sendMsgBle(this, mService, btnValue, mDeviceConnected);
-            } else {
-                BleUtils.sendMsgBle(this, mService, data, mDeviceConnected);
-
-            }
+            BleUtils.sendMsgBle(this, mService, data, mDeviceConnected);
+//            SharedPreferences btns = this.getSharedPreferences(BtnsFragment.btnPrefValues, Context.MODE_PRIVATE);
+//            String btnValue = btns.getString(data, "no data");
+//            if (!btnValue.equals("no data")) {
+//                BleUtils.sendMsgBle(this, mService, btnValue, mDeviceConnected);
         } else {
             Toast.makeText(this, "Необходимо ввести текст", Toast.LENGTH_SHORT).show();
         }

@@ -25,4 +25,6 @@
     <string name="needToConnToDevice">Устройство не подключено</string>
     <string name="decSign"><![CDATA[<]]></string>
     <string name="incSign"><![CDATA[>]]></string>
+    <string name="saveData">Сохранить</string>
+    <string name="close">Закрыть</string>
 </resources>
