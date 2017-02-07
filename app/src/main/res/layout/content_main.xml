@@ -15,17 +15,16 @@
     tools:showIn="@layout/app_bar_main">
 
 
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-        <TextView
+             <TextView
         android:text="no data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,7 +35,7 @@
        />
 
 
-    <LinearLayout
+            <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -60,21 +59,6 @@
 
     </LinearLayout>
 
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/SendBle"
-        android:layout_marginTop="10dp"
-        android:id="@+id/BtnsFrag"
-        android:layout_above="@id/action_connect">
-
-
-    </FrameLayout>
-
-
             <Button
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
@@ -82,7 +66,36 @@
                 android:text="@string/btn_connect"
                 android:onClick="onConnectClicked"
                 android:id="@+id/action_connect"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:orientation="vertical">
+
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fragCont1"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fragCont2"/>
+            </LinearLayout>
+
+
+
         </LinearLayout>
+
+
+
+
     </ScrollView>
+
+
+
 
 </RelativeLayout>

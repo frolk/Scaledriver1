@@ -35,20 +35,22 @@ import android.widget.Toast;
 import com.scale_driver.scaledriver1.ble_handle.BleUtils;
 import com.scale_driver.scaledriver1.ble_handle.ScannerFragment;
 import com.scale_driver.scaledriver1.btnsHandle.BtnsFragment;
+import com.scale_driver.scaledriver1.btnsHandle.SetUpBtnsFragment;
 import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ScannerFragment.OnDeviceSelectedListener, BtnsFragment.btnListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ScannerFragment.OnDeviceSelectedListener {
     EditText etSend;
     private TextView tvData;
     Button btn_send;
     SharedPreferences sp;
     BtnsFragment btnsFragment;
+    SetUpBtnsFragment setUpBtnsFragment;
     Boolean fragmentVisible = false;
     FragmentTransaction fTrans;
-    private static final String TAG = "myUart";
+    private static final String TAG = "mLog";
     protected static final int REQUEST_ENABLE_BT = 2;
     public UartService mService = null;
     public boolean mDeviceConnected = false;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         btnsFragment = new BtnsFragment();
+        setUpBtnsFragment = new SetUpBtnsFragment();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity
 
         btn_connect = (Button) findViewById(R.id.action_connect);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
+
         tvData = (TextView) findViewById(R.id.tvData);
 
     }
@@ -113,13 +117,15 @@ public class MainActivity extends AppCompatActivity
         fTrans.addToBackStack("");
 
         if(showBtns && !fragmentVisible) {
-
             fragmentVisible = true;
-            fTrans.add(R.id.BtnsFrag, btnsFragment);
+            fTrans.add(R.id.fragCont1, setUpBtnsFragment);
+            fTrans.add(R.id.fragCont2, btnsFragment);
         }
         else if (!showBtns && fragmentVisible){
             fragmentVisible = false;
             fTrans.remove(btnsFragment);
+            fTrans.remove(setUpBtnsFragment);
+            //fTrans.remove(setUpBtnsFragment);
         }
         fTrans.commit();
 
@@ -285,10 +291,6 @@ public class MainActivity extends AppCompatActivity
 
         if(!data.isEmpty()) {
             BleUtils.sendMsgBle(this, mService, data, mDeviceConnected);
-//            SharedPreferences btns = this.getSharedPreferences(BtnsFragment.btnPrefValues, Context.MODE_PRIVATE);
-//            String btnValue = btns.getString(data, "no data");
-//            if (!btnValue.equals("no data")) {
-//                BleUtils.sendMsgBle(this, mService, btnValue, mDeviceConnected);
         } else {
             Toast.makeText(this, "Необходимо ввести текст", Toast.LENGTH_SHORT).show();
         }
@@ -298,9 +300,9 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
-    @Override
-    public void CorrectBtnClicked(String s) {
-        BleUtils.sendMsgBle(this, mService, s, mDeviceConnected);
-
-    }
+//    @Override
+//    public void CorrectBtnClicked(String s) {
+//        BleUtils.sendMsgBle(this, mService, s, mDeviceConnected);
+//
+//    }
 }
