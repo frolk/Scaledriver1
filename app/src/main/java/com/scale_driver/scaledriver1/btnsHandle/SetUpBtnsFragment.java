@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class SetUpBtnsFragment extends Fragment implements View.OnClickListener {
+public class SetUpBtnsFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener{
 
     private static final String TAG = "mLog";
     SeekBar seekBar;
@@ -38,6 +38,8 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
     EditText etName;
     Map<Integer, String> hashMap = new HashMap<>();
     SetUpbtns msetUpbtns;
+
+
 
 
     public interface SetUpbtns {
@@ -80,6 +82,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
 
         btnClear = (Button) v.findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
+        btnClear.setOnLongClickListener(this);
 
         btnClose = (Button) v.findViewById(R.id.btnClose);
         btnClose.setOnClickListener(this);
@@ -115,6 +118,18 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
         return v;
 
     }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if(view.getId() == R.id.btnClear){
+           // db = correctDB.getWritableDatabase();
+            //db.execSQL("DROP TABLE IF EXISTS " + CorrectDB.TABLE_BTNS);
+            getActivity().deleteDatabase(CorrectDB.DATABASE_NAME);
+            Log.d(TAG, "Database deleted");
+        }
+        return false;
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -165,9 +180,10 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
     private void updateData() {
         db = correctDB.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(CorrectDB.KEY_BTNID, currentBtn);
         contentValues.put(CorrectDB.KEY_NAME, etName.getText().toString());
         contentValues.put(CorrectDB.KEY_VALUE1, seekBar.getProgress());
-        String selection = CorrectDB.KEY_ID + " LIKE ?";
+        String selection = CorrectDB.KEY_BTNID + " LIKE ?";
         String[] selectionArgs = {currentBtn};
 
         int updCount = db.update(CorrectDB.TABLE_BTNS, contentValues, selection, selectionArgs);
@@ -180,6 +196,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
     private void addData() {
         db = correctDB.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(CorrectDB.KEY_BTNID, currentBtn);
         contentValues.put(CorrectDB.KEY_NAME, etName.getText().toString());
         contentValues.put(CorrectDB.KEY_VALUE1, seekBar.getProgress());
 
@@ -190,7 +207,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
 
     private Boolean isIdExist(String currentBtn) {
         db = correctDB.getWritableDatabase();
-        String selection = CorrectDB.KEY_ID + " LIKE ?";
+        String selection = CorrectDB.KEY_BTNID + " LIKE ?";
         String[] selectionArgs = new String[]{currentBtn};
         Cursor cursor = db.query(CorrectDB.TABLE_BTNS, null, selection, selectionArgs, null, null, null);
         if (cursor.getCount() <= 0) {
@@ -209,12 +226,13 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
         Cursor cursor = db.query(CorrectDB.TABLE_BTNS, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             int idIndex = cursor.getColumnIndex(CorrectDB.KEY_ID);
+            int btnIdIndex = cursor.getColumnIndex(CorrectDB.KEY_BTNID);
             int nameIndex = cursor.getColumnIndex(CorrectDB.KEY_NAME);
             int value1Index = cursor.getColumnIndex(CorrectDB.KEY_VALUE1);
 
             do {
                 hashMap.put(cursor.getInt(idIndex), cursor.getString(nameIndex));
-                Log.d(TAG, "id = " + cursor.getInt(idIndex)
+                Log.d(TAG, "id = " + cursor.getInt(idIndex) + ", bntId = " + cursor.getInt(btnIdIndex)
                         + ", name = " + cursor.getString(nameIndex) + ", value = " + cursor.getInt(value1Index));
             } while (cursor.moveToNext());
 
