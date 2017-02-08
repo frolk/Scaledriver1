@@ -322,4 +322,13 @@ public class MainActivity extends AppCompatActivity
         fTrans.remove(setUpBtnsFragment);
         fTrans.commit();
     }
+
+    @Override
+    public void updateBtnFrag() {
+        fTrans = getFragmentManager().beginTransaction();
+        fTrans.detach(btnsFragment);
+        fTrans.attach(btnsFragment);
+        fTrans.commit();
+
+    }
 }

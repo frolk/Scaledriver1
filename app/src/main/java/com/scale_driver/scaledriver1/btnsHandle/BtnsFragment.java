@@ -37,9 +37,7 @@ public class BtnsFragment extends Fragment {
     CheckBox cbSetButns;
     CheckBox cbCheckButns;
 
-
     Map<Integer, String> hashMap = new HashMap<>();
-
 
     private static String[] mContacts = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
     GridView gvMain;
@@ -64,25 +62,9 @@ public class BtnsFragment extends Fragment {
     }
 
 
-
-        @Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-            correctDB = new CorrectDB(getActivity());
-            db = correctDB.getWritableDatabase();
-
-        hashMap.put(1, "-101");
-        hashMap.put(2, "-202");
-        hashMap.put(3, "-303");
-        hashMap.put(4, "-504");
-
-        Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
-
-        for (Map.Entry<Integer, String> item : set) {
-            mContacts[item.getKey() - 1] = item.getValue();
-            Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
-        }
-
 
     }
 
@@ -91,6 +73,8 @@ public class BtnsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.btnfragment, null);
+
+        btnNameUpdate();
 
         cbSetButns = (CheckBox) v.findViewById(R.id.cbSetBut);
         cbCheckButns = (CheckBox) v.findViewById(R.id.cbCheckBut);
@@ -104,16 +88,9 @@ public class BtnsFragment extends Fragment {
                 if (cbSetButns.isChecked()) {
                     mBtnListener.SetUpBtnClicked(i);
                 } else {
-                    Log.d("mLog", "value = " + getBtnValue(i));
+                    //Log.d("mLog", "position = " + i + ", btnvalue = " + getBtnValue(i + 1));
+                    mBtnListener.CorrectBtnClicked(String.valueOf(getBtnValue(i+1)));
                 }
-            }
-        });
-
-        gvMain.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "Долгое нажатие на: " + mAdapter.getItem(i), Toast.LENGTH_SHORT).show();
-                return false;
             }
         });
 
@@ -121,18 +98,48 @@ public class BtnsFragment extends Fragment {
     }
 
     private int getBtnValue(int i) {
+        db = correctDB.getWritableDatabase();
         int btnValue = 0;
-        String[] columns = new String[] {CorrectDB.KEY_VALUE1};
-        String selection = "id LIKE ?";
-        String[] selectionsArgs = new String[] {String.valueOf(i)};
-        Cursor cursor = db.query(CorrectDB.TABLE_BTNS, columns, "id LIKE ?", selectionsArgs,null,null,null);
-        if(cursor.moveToFirst()){
+        String[] columns = new String[]{CorrectDB.KEY_VALUE1};
+        String selection = CorrectDB.KEY_BTNID + " LIKE ?";
+        String[] selectionsArgs = new String[]{String.valueOf(i)};
+        Cursor cursor = db.query(CorrectDB.TABLE_BTNS, columns, selection, selectionsArgs, null, null, null);
+        if (cursor.moveToFirst()) {
             int value1Index = cursor.getColumnIndex(CorrectDB.KEY_VALUE1);
             btnValue = cursor.getInt(value1Index);
         }
         cursor.close();
-        db.close();
+        correctDB.close();
         return btnValue;
+    }
+
+    private void btnNameUpdate(){
+        correctDB = new CorrectDB(getActivity());
+        db = correctDB.getWritableDatabase();
+
+        String[] btnsName = new String[]{CorrectDB.KEY_BTNID, CorrectDB.KEY_NAME};
+        Cursor cursor = db.query(CorrectDB.TABLE_BTNS, btnsName, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            int btnIdIndex = cursor.getColumnIndex(CorrectDB.KEY_BTNID);
+            int btnNameIndex = cursor.getColumnIndex(CorrectDB.KEY_NAME);
+
+            do {
+                hashMap.put(cursor.getInt(btnIdIndex), cursor.getString(btnNameIndex));
+                Log.d("mLog", "btnId = " + cursor.getInt(btnIdIndex) + ", btnName = " + cursor.getString(btnNameIndex));
+            } while (cursor.moveToNext());
+        }
+        Log.d("mLog", "0 rows in base");
+
+        cursor.close();
+        correctDB.close();
+
+        Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
+
+        for (Map.Entry<Integer, String> item : set) {
+            mContacts[item.getKey() - 1] = item.getValue();
+            Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
+        }
+
     }
 
 }

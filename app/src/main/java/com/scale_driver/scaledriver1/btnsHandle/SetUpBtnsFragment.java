@@ -44,6 +44,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
 
     public interface SetUpbtns {
         public void setUpbtnsCloseFrag();
+        public void updateBtnFrag();
     }
 
 
@@ -72,8 +73,8 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.set_up_btns_fragment, null);
+
         currentBtn = String.valueOf(getArguments().getInt("btnId") + 1);
-         Toast.makeText(getActivity(), String.valueOf(isIdExist(currentBtn)), Toast.LENGTH_SHORT).show();
 
         etName = (EditText) v.findViewById(R.id.etBtnName);
 
@@ -148,7 +149,8 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
                     updateData();
                 } else
                     addData();
-
+                msetUpbtns.updateBtnFrag();
+                msetUpbtns.setUpbtnsCloseFrag();
                 break;
 
             case R.id.btnClose:
@@ -158,11 +160,11 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
 
             case R.id.btnClear:
                 clearBase();
+                msetUpbtns.updateBtnFrag();
                 break;
 
         }
     }
-
     private void clearBase() {
         db = correctDB.getWritableDatabase();
         int clearData = db.delete(CorrectDB.TABLE_BTNS, null, null);
