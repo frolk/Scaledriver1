@@ -27,24 +27,26 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class SetUpBtnsFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener{
+public class SetUpBtnsFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 
     private static final String TAG = "mLog";
     SeekBar seekBar;
     String currentBtn;
+    String currentBtnName;
+    String currentBtnValue1;
     Button btnInc, btnDec, btnSave, btnClose, btnClear;
-    int correctvalue = 0;
+    int correctvalue;
     TextView seekText;
     EditText etName;
     Map<Integer, String> hashMap = new HashMap<>();
     SetUpbtns msetUpbtns;
 
 
-
-
     public interface SetUpbtns {
         public void setUpbtnsCloseFrag();
         public void updateBtnFrag();
+        public void CorrectBtnClicked(String s);
+
     }
 
 
@@ -73,21 +75,15 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.set_up_btns_fragment, null);
-
-        currentBtn = String.valueOf(getArguments().getInt("btnId") + 1);
-
         etName = (EditText) v.findViewById(R.id.etBtnName);
-
         btnSave = (Button) v.findViewById(R.id.btnSaveData);
         btnSave.setOnClickListener(this);
 
         btnClear = (Button) v.findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
         btnClear.setOnLongClickListener(this);
-
         btnClose = (Button) v.findViewById(R.id.btnClose);
         btnClose.setOnClickListener(this);
-
 
         btnInc = (Button) v.findViewById(R.id.btnInc);
         btnInc.setOnClickListener(this);
@@ -96,14 +92,15 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
         btnDec.setOnClickListener(this);
 
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
-        correctvalue = seekBar.getProgress();
         seekText = (TextView) v.findViewById(R.id.seekText);
+
         seekText.setText(String.valueOf(correctvalue));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 correctvalue = i;
                 seekText.setText(String.valueOf(correctvalue));
+                msetUpbtns.CorrectBtnClicked(String.valueOf(i));
             }
 
             @Override
@@ -116,14 +113,31 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
 
             }
         });
+
+        currentBtn = String.valueOf(getArguments().getInt(CorrectDB.KEY_BTNID));
+        currentBtnName = getArguments().getString(CorrectDB.KEY_NAME);
+//        correctvalue = getArguments().getInt(CorrectDB.KEY_VALUE1);
+        currentBtnValue1 = String.valueOf(getArguments().getInt(CorrectDB.KEY_VALUE1));
+        Log.d(TAG, "From SetUpbtns: btnId = " + currentBtn + ", btnName = " + currentBtnName + ", btnValue1 = " + currentBtnValue1);
+
+
+
         return v;
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        etName.setText(currentBtnName);
+        seekBar.setProgress(Integer.parseInt(currentBtnValue1));
+    }
+
     @Override
     public boolean onLongClick(View view) {
-        if(view.getId() == R.id.btnClear){
-           // db = correctDB.getWritableDatabase();
+        if (view.getId() == R.id.btnClear) {
+            // db = correctDB.getWritableDatabase();
             //db.execSQL("DROP TABLE IF EXISTS " + CorrectDB.TABLE_BTNS);
             getActivity().deleteDatabase(CorrectDB.DATABASE_NAME);
             Log.d(TAG, "Database deleted");
@@ -138,6 +152,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
         switch (view.getId()) {
             case R.id.btnInc:
                 changeSeekValue(correctvalue++);
+
                 break;
 
             case R.id.btnDec:
@@ -154,8 +169,10 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btnClose:
-                msetUpbtns.setUpbtnsCloseFrag();
-                readData();
+                // msetUpbtns.setUpbtnsCloseFrag();
+                etName.setText(currentBtnName);
+                seekBar.setProgress(correctvalue);
+                seekText.setText(String.valueOf(correctvalue));
                 break;
 
             case R.id.btnClear:
@@ -165,6 +182,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
 
         }
     }
+
     private void clearBase() {
         db = correctDB.getWritableDatabase();
         int clearData = db.delete(CorrectDB.TABLE_BTNS, null, null);
@@ -239,13 +257,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
             } while (cursor.moveToNext());
 
         } else Log.d(TAG, "0 rows");
-
-
-//        Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
-//
-//        for (Map.Entry<Integer, String> row : set){
-//            Log.d(TAG, row.getKey() + ": " + row.getValue());
-//        }
 
         cursor.close();
         correctDB.close();

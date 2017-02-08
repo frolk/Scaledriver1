@@ -58,7 +58,7 @@ public class BtnsFragment extends Fragment {
 
         public void CorrectBtnClicked(String s);
 
-        public void SetUpBtnClicked(int btnId);
+        public void SetUpBtnClicked(int btnId, String item, int btnValue1);
     }
 
 
@@ -86,7 +86,8 @@ public class BtnsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (cbSetButns.isChecked()) {
-                    mBtnListener.SetUpBtnClicked(i);
+                    mBtnListener.SetUpBtnClicked(i+1,mAdapter.getItem(i),getBtnValue(i+1));
+                    Log.d("mLog", "btnid = " + (i+1) + ", btnName = " + mAdapter.getItem(i)+ ", btnValue = "+ getBtnValue(i+1));
                 } else {
                     //Log.d("mLog", "position = " + i + ", btnvalue = " + getBtnValue(i + 1));
                     mBtnListener.CorrectBtnClicked(String.valueOf(getBtnValue(i+1)));
@@ -125,10 +126,10 @@ public class BtnsFragment extends Fragment {
 
             do {
                 hashMap.put(cursor.getInt(btnIdIndex), cursor.getString(btnNameIndex));
-                Log.d("mLog", "btnId = " + cursor.getInt(btnIdIndex) + ", btnName = " + cursor.getString(btnNameIndex));
+//                Log.d("mLog", "btnId = " + cursor.getInt(btnIdIndex) + ", btnName = " + cursor.getString(btnNameIndex));
             } while (cursor.moveToNext());
         }
-        Log.d("mLog", "0 rows in base");
+//        Log.d("mLog", "0 rows in base");
 
         cursor.close();
         correctDB.close();
@@ -137,7 +138,7 @@ public class BtnsFragment extends Fragment {
 
         for (Map.Entry<Integer, String> item : set) {
             mContacts[item.getKey() - 1] = item.getValue();
-            Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
+//            Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
         }
 
     }

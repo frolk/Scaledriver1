@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.scale_driver.scaledriver1.ble_handle.BleUtils;
 import com.scale_driver.scaledriver1.ble_handle.ScannerFragment;
 import com.scale_driver.scaledriver1.btnsHandle.BtnsFragment;
+import com.scale_driver.scaledriver1.btnsHandle.CorrectDB;
 import com.scale_driver.scaledriver1.btnsHandle.SetUpBtnsFragment;
 import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
@@ -301,11 +302,14 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void SetUpBtnClicked(int btnId) {
+    public void SetUpBtnClicked(int btnId, String btnName, int btnValue1) {
         Bundle bundle = new Bundle();
-        bundle.putInt("btnId", btnId);
+        bundle.putInt(CorrectDB.KEY_BTNID, btnId);
+        bundle.putString(CorrectDB.KEY_NAME, btnName);
+        bundle.putInt(CorrectDB.KEY_VALUE1, btnValue1);
         setUpBtnsFragment.setArguments(bundle);
         fTrans = getFragmentManager().beginTransaction();
+
         fTrans.add(R.id.fragCont1, setUpBtnsFragment);
         fTrans.commit();
 
@@ -313,12 +317,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void CorrectBtnClicked(String s) {
         BleUtils.sendMsgBle(this, mService, s, mDeviceConnected);
-
     }
 
     @Override
     public void setUpbtnsCloseFrag() {
         fTrans = getFragmentManager().beginTransaction();
+        fTrans.detach(setUpBtnsFragment);
         fTrans.remove(setUpBtnsFragment);
         fTrans.commit();
     }
