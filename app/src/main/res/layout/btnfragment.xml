@@ -3,6 +3,28 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <CheckBox
+            android:text="Настройка"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cbSetBut"
+            android:textSize="15sp"
+            android:layout_weight="1" />
+
+        <CheckBox
+            android:text="Проверка"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:id="@+id/cbCheckBut"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <GridView
         android:layout_width="match_parent"

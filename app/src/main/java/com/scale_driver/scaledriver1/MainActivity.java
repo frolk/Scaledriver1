@@ -41,7 +41,8 @@ import com.scale_driver.scaledriver1.settings.SettingsActivity;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ScannerFragment.OnDeviceSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        ScannerFragment.OnDeviceSelectedListener, BtnsFragment.BtnListener, SetUpBtnsFragment.SetUpbtns {
     EditText etSend;
     private TextView tvData;
     Button btn_send;
@@ -118,14 +119,11 @@ public class MainActivity extends AppCompatActivity
 
         if(showBtns && !fragmentVisible) {
             fragmentVisible = true;
-            fTrans.add(R.id.fragCont1, setUpBtnsFragment);
             fTrans.add(R.id.fragCont2, btnsFragment);
         }
         else if (!showBtns && fragmentVisible){
             fragmentVisible = false;
             fTrans.remove(btnsFragment);
-            fTrans.remove(setUpBtnsFragment);
-            //fTrans.remove(setUpBtnsFragment);
         }
         fTrans.commit();
 
@@ -300,9 +298,25 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
-//    @Override
-//    public void CorrectBtnClicked(String s) {
-//        BleUtils.sendMsgBle(this, mService, s, mDeviceConnected);
-//
-//    }
+
+
+    @Override
+    public void SetUpBtnClicked(int btnId) {
+        fTrans = getFragmentManager().beginTransaction();
+        fTrans.add(R.id.fragCont1, setUpBtnsFragment);
+        fTrans.commit();
+
+    }
+    @Override
+    public void CorrectBtnClicked(String s) {
+        BleUtils.sendMsgBle(this, mService, s, mDeviceConnected);
+
+    }
+
+    @Override
+    public void setUpbtnsCloseFrag() {
+        fTrans = getFragmentManager().beginTransaction();
+        fTrans.remove(setUpBtnsFragment);
+        fTrans.commit();
+    }
 }

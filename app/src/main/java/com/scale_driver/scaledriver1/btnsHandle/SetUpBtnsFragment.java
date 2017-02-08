@@ -1,5 +1,6 @@
 package com.scale_driver.scaledriver1.btnsHandle;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,10 +37,26 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
     TextView seekText;
     EditText etName;
     Map<Integer,String> hashMap = new HashMap<>();
+    SetUpbtns msetUpbtns;
+
+
+    public interface SetUpbtns{
+        public void setUpbtnsCloseFrag();
+    }
 
 
     SQLiteDatabase db;
     CorrectDB correctDB;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            msetUpbtns = (SetUpbtns) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement SetUpBtns");
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,7 +131,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
                 break;
 
             case R.id.btnClose:
-                readData();
+                msetUpbtns.setUpbtnsCloseFrag();
                 break;
 
             case R.id.btnClear:

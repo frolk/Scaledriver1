@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -28,56 +30,57 @@ import java.util.Set;
 
 public class BtnsFragment extends Fragment {
 
-  //  BtnListener mCallBtnBack;
+    BtnListener mBtnListener;
     ArrayAdapter<String> mAdapter;
     CorrectDB correctDB;
     SQLiteDatabase db;
+    CheckBox cbSetButns;
+    CheckBox cbCheckButns;
+
 
     Map<Integer, String> hashMap = new HashMap<>();
 
 
-    private static String[] mContacts = {"","","","","","","","","","","","","","","",""};
+    private static String[] mContacts = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
     GridView gvMain;
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//
-//        try {
-//            mCallBtnBack = (BtnListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString() + " must implement btnListener");
-//        }
-//
-//    }
-//    public interface BtnListener {
-//
-//        public void CorrectBtnClicked(String s);
-//        public void SetUpBtnClicked(String s);
-//    }
-
-
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mBtnListener = (BtnListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement btnListener");
+        }
+
+    }
+
+    public interface BtnListener {
+
+        public void CorrectBtnClicked(String s);
+
+        public void SetUpBtnClicked(int btnId);
+    }
+
+
+
+        @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        correctDB = new CorrectDB(getActivity());
+            correctDB = new CorrectDB(getActivity());
+            db = correctDB.getWritableDatabase();
+
         hashMap.put(1, "-101");
         hashMap.put(2, "-202");
         hashMap.put(3, "-303");
         hashMap.put(4, "-504");
-        hashMap.put(5, "105");
-        hashMap.put(6, "205");
-        hashMap.put(7, "305");
-        hashMap.put(8, "505");
-        hashMap.put(9, "606");
-        hashMap.put(9, "707");
-        hashMap.put(10, "808");
 
-        Set<Map.Entry<Integer,String>> set = hashMap.entrySet();
+        Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
 
-        for(Map.Entry<Integer,String> item : set){
-            mContacts[item.getKey()-1] = item.getValue();
-             Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
+        for (Map.Entry<Integer, String> item : set) {
+            mContacts[item.getKey() - 1] = item.getValue();
+            Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
         }
 
 
@@ -89,13 +92,22 @@ public class BtnsFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.btnfragment, null);
 
+        cbSetButns = (CheckBox) v.findViewById(R.id.cbSetBut);
+        cbCheckButns = (CheckBox) v.findViewById(R.id.cbCheckBut);
+
         mAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item, R.id.tvText, mContacts);
         gvMain = (GridView) v.findViewById(R.id.gridView1);
         gvMain.setAdapter(mAdapter);
         gvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "Выбрано: " + mAdapter.getItem(i), Toast.LENGTH_SHORT).show();
+                if (cbSetButns.isChecked()) {
+                    Toast.makeText(getActivity(), "Настраиваем: " + mAdapter.getItem(i), Toast.LENGTH_SHORT).show();
+                    mBtnListener.SetUpBtnClicked(i);
+                } else {
+                    Log.d("mLog", "value = " + getBtnValue(i));
+                    Toast.makeText(getActivity(), "Отправляем: " + mAdapter.getItem(i), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -108,7 +120,21 @@ public class BtnsFragment extends Fragment {
         });
 
         return v;
+    }
 
+    private int getBtnValue(int i) {
+        int btnValue = 0;
+        String[] columns = new String[] {CorrectDB.KEY_VALUE1};
+        String selection = "id LIKE ?";
+        String[] selectionsArgs = new String[] {String.valueOf(i)};
+        Cursor cursor = db.query(CorrectDB.TABLE_BTNS, columns, "id LIKE ?", selectionsArgs,null,null,null);
+        if(cursor.moveToFirst()){
+            int value1Index = cursor.getColumnIndex(CorrectDB.KEY_VALUE1);
+            btnValue = cursor.getInt(value1Index);
+        }
+        cursor.close();
+        db.close();
+        return btnValue;
     }
 
 }

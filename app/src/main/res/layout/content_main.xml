@@ -15,85 +15,77 @@
     tools:showIn="@layout/app_bar_main">
 
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-             <TextView
-        android:text="no data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-            android:layout_gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/action_connect"
-        android:id="@+id/tvData"
-       />
+            <TextView
+                android:id="@+id/tvData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/action_connect"
+                android:layout_gravity="center"
+                android:text="no data" />
 
 
             <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/tvData"
-        android:id="@+id/SendBle">
+                android:id="@+id/SendBle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvData"
+                android:orientation="horizontal">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text=""
-            android:ems="10"
-            android:id="@+id/etSend"/>
+                <EditText
+                    android:id="@+id/etSend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="" />
 
-        <Button
-            android:text="Send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnSend"
-            android:onClick="sendClick"/>
+                <Button
+                    android:id="@+id/btnSend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="sendClick"
+                    android:text="Send" />
 
-    </LinearLayout>
+            </LinearLayout>
 
             <Button
+                android:id="@+id/action_connect"
                 android:layout_width="wrap_content"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_connect"
+                android:layout_gravity="center"
                 android:onClick="onConnectClicked"
-                android:id="@+id/action_connect"/>
-
+                android:text="@string/btn_connect" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="370dp"
                 android:orientation="vertical">
 
 
                 <FrameLayout
+                    android:id="@+id/fragCont1"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="20dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/fragCont1"/>
+                    android:layout_marginTop="20dp" />
 
                 <FrameLayout
+                    android:id="@+id/fragCont2"
+                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fragCont2"/>
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
-
-
 
         </LinearLayout>
 
-
-
-
-    </ScrollView>
 
 
 
