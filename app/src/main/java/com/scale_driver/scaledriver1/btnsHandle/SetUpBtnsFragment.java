@@ -100,7 +100,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 correctvalue = i;
                 seekText.setText(String.valueOf(correctvalue));
-                msetUpbtns.CorrectBtnClicked(String.valueOf(i));
+                msetUpbtns.CorrectBtnClicked("$" + String.valueOf(i) + "&");
             }
 
             @Override
@@ -169,10 +169,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btnClose:
-                // msetUpbtns.setUpbtnsCloseFrag();
-                etName.setText(currentBtnName);
-                seekBar.setProgress(correctvalue);
-                seekText.setText(String.valueOf(correctvalue));
+                 msetUpbtns.setUpbtnsCloseFrag();
                 break;
 
             case R.id.btnClear:
@@ -208,8 +205,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
 
         int updCount = db.update(CorrectDB.TABLE_BTNS, contentValues, selection, selectionArgs);
         Log.d(TAG, "update rows count = " + updCount);
-        //db.insert(CorrectDB.TABLE_BTNS, null, contentValues);
-        Toast.makeText(getActivity(), "Saved data", Toast.LENGTH_SHORT).show();
         correctDB.close();
     }
 
