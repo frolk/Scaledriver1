@@ -102,11 +102,9 @@ public class BtnsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (cbSetButns.isChecked()) {
-                    Toast.makeText(getActivity(), "Настраиваем: " + mAdapter.getItem(i), Toast.LENGTH_SHORT).show();
                     mBtnListener.SetUpBtnClicked(i);
                 } else {
                     Log.d("mLog", "value = " + getBtnValue(i));
-                    Toast.makeText(getActivity(), "Отправляем: " + mAdapter.getItem(i), Toast.LENGTH_SHORT).show();
                 }
             }
         });

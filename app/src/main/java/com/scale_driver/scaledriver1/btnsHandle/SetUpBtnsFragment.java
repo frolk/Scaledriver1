@@ -31,16 +31,16 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
 
     private static final String TAG = "mLog";
     SeekBar seekBar;
-    String currentBtn = "1";
+    String currentBtn;
     Button btnInc, btnDec, btnSave, btnClose, btnClear;
     int correctvalue = 0;
     TextView seekText;
     EditText etName;
-    Map<Integer,String> hashMap = new HashMap<>();
+    Map<Integer, String> hashMap = new HashMap<>();
     SetUpbtns msetUpbtns;
 
 
-    public interface SetUpbtns{
+    public interface SetUpbtns {
         public void setUpbtnsCloseFrag();
     }
 
@@ -62,6 +62,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         correctDB = new CorrectDB(getActivity());
+
     }
 
     @Nullable
@@ -69,6 +70,8 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.set_up_btns_fragment, null);
+        currentBtn = String.valueOf(getArguments().getInt("btnId") + 1);
+         Toast.makeText(getActivity(), String.valueOf(isIdExist(currentBtn)), Toast.LENGTH_SHORT).show();
 
         etName = (EditText) v.findViewById(R.id.etBtnName);
 
@@ -126,12 +129,16 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
                 break;
 
             case R.id.btnSaveData:
-                saveData();
-                // addData();
+                if (isIdExist(currentBtn)) {
+                    updateData();
+                } else
+                    addData();
+
                 break;
 
             case R.id.btnClose:
                 msetUpbtns.setUpbtnsCloseFrag();
+                readData();
                 break;
 
             case R.id.btnClear:
@@ -142,9 +149,11 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
     }
 
     private void clearBase() {
+        db = correctDB.getWritableDatabase();
         int clearData = db.delete(CorrectDB.TABLE_BTNS, null, null);
-        Log.d(TAG, "delete rows conut = " + clearData);
+        Log.d(TAG, "delete rows count = " + clearData);
         Toast.makeText(getActivity(), "Clear DataBase", Toast.LENGTH_SHORT).show();
+        correctDB.close();
 
     }
 
@@ -153,7 +162,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
         seekBar.setProgress(value);
     }
 
-    private void saveData() {
+    private void updateData() {
         db = correctDB.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CorrectDB.KEY_NAME, etName.getText().toString());
@@ -161,7 +170,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
         String selection = CorrectDB.KEY_ID + " LIKE ?";
         String[] selectionArgs = {currentBtn};
 
-        int updCount = db.update(CorrectDB.TABLE_BTNS, contentValues, selection, selectionArgs );
+        int updCount = db.update(CorrectDB.TABLE_BTNS, contentValues, selection, selectionArgs);
         Log.d(TAG, "update rows count = " + updCount);
         //db.insert(CorrectDB.TABLE_BTNS, null, contentValues);
         Toast.makeText(getActivity(), "Saved data", Toast.LENGTH_SHORT).show();
@@ -179,34 +188,47 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener 
         correctDB.close();
     }
 
-
-
-
-    private void readData(){
+    private Boolean isIdExist(String currentBtn) {
         db = correctDB.getWritableDatabase();
-        Cursor cursor = db.query(CorrectDB.TABLE_BTNS, null,null,null,null,null,null);
-        if(cursor.moveToFirst()){
+        String selection = CorrectDB.KEY_ID + " LIKE ?";
+        String[] selectionArgs = new String[]{currentBtn};
+        Cursor cursor = db.query(CorrectDB.TABLE_BTNS, null, selection, selectionArgs, null, null, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        correctDB.close();
+
+        return true;
+
+    }
+
+    private void readData() {
+        db = correctDB.getWritableDatabase();
+        Cursor cursor = db.query(CorrectDB.TABLE_BTNS, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
             int idIndex = cursor.getColumnIndex(CorrectDB.KEY_ID);
             int nameIndex = cursor.getColumnIndex(CorrectDB.KEY_NAME);
             int value1Index = cursor.getColumnIndex(CorrectDB.KEY_VALUE1);
 
             do {
-                hashMap.put(cursor.getInt(idIndex),cursor.getString(nameIndex));
-//                Log.d(TAG, "id = " + cursor.getInt(idIndex)
-//                        + ", name = " + cursor.getString(nameIndex) + ", value = " + cursor.getInt(value1Index));
+                hashMap.put(cursor.getInt(idIndex), cursor.getString(nameIndex));
+                Log.d(TAG, "id = " + cursor.getInt(idIndex)
+                        + ", name = " + cursor.getString(nameIndex) + ", value = " + cursor.getInt(value1Index));
             } while (cursor.moveToNext());
 
-        } else Log.d (TAG, "0 rows");
+        } else Log.d(TAG, "0 rows");
 
 
-        Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
-
-        for (Map.Entry<Integer, String> row : set){
-            Log.d(TAG, row.getKey() + ": " + row.getValue());
-        }
+//        Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
+//
+//        for (Map.Entry<Integer, String> row : set){
+//            Log.d(TAG, row.getKey() + ": " + row.getValue());
+//        }
 
         cursor.close();
-
+        correctDB.close();
     }
 
 }

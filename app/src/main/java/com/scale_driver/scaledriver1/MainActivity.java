@@ -302,6 +302,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void SetUpBtnClicked(int btnId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("btnId", btnId);
+        setUpBtnsFragment.setArguments(bundle);
         fTrans = getFragmentManager().beginTransaction();
         fTrans.add(R.id.fragCont1, setUpBtnsFragment);
         fTrans.commit();
