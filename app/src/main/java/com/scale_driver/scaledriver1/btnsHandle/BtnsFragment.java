@@ -30,6 +30,8 @@ import java.util.Set;
 
 public class BtnsFragment extends Fragment {
 
+    public static final int BTN_NUMS = 10;
+
     BtnListener mBtnListener;
     ArrayAdapter<String> mAdapter;
     CorrectDB correctDB;
@@ -39,7 +41,8 @@ public class BtnsFragment extends Fragment {
 
     Map<Integer, String> hashMap = new HashMap<>();
 
-    private static String[] mContacts = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
+    private static String[] mContacts = new String[BTN_NUMS];
+            //{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
     GridView gvMain;
 
     @Override
@@ -61,11 +64,11 @@ public class BtnsFragment extends Fragment {
         public void SetUpBtnClicked(int btnId, String item, int btnValue1);
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        for(int i = 0; i < BTN_NUMS; i++)
+            mContacts[i] = "";
     }
 
     @Nullable
@@ -87,7 +90,7 @@ public class BtnsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (cbSetButns.isChecked()) {
                     mBtnListener.SetUpBtnClicked(i+1,mAdapter.getItem(i),getBtnValue(i+1));
-                    Log.d("mLog", "btnid = " + (i+1) + ", btnName = " + mAdapter.getItem(i)+ ", btnValue = "+ getBtnValue(i+1));
+                    Log.d("mLog", "number of items: " + mAdapter.getCount());
                 } else {
                     //Log.d("mLog", "position = " + i + ", btnvalue = " + getBtnValue(i + 1));
                     mBtnListener.CorrectBtnClicked(String.valueOf(getBtnValue(i+1)));
@@ -137,7 +140,10 @@ public class BtnsFragment extends Fragment {
         Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
 
         for (Map.Entry<Integer, String> item : set) {
-            mContacts[item.getKey() - 1] = item.getValue();
+            int x = item.getKey() - 1;
+            if (x < BTN_NUMS){
+               mContacts[x] = item.getValue();
+            }
 //            Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
         }
 
