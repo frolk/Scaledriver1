@@ -38,7 +38,7 @@ public class BtnsFragment extends Fragment {
     SharedPreferences sp;
     int btnNums;
 
-    SparseArray<String> btnNamesArray = new SparseArray<String>();
+    SparseArray<String> btnNamesArray;
 
     private static String[] mContacts;
     GridView gvMain;
@@ -73,6 +73,7 @@ public class BtnsFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.btnfragment, null);
 
+        btnNamesArray = new SparseArray<String>();
         btnNameUpdate();
 
         cbSetButns = (CheckBox) v.findViewById(R.id.cbSetBut);

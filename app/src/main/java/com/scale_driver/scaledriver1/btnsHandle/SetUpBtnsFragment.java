@@ -174,6 +174,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
             case R.id.btnClear:
                 clearBase();
                 msetUpbtns.updateBtnFrag();
+                msetUpbtns.setUpbtnsCloseFrag();
                 break;
 
         }
@@ -183,7 +184,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
         db = correctDB.getWritableDatabase();
         int clearData = db.delete(CorrectDB.TABLE_BTNS, null, null);
         Log.d(TAG, "delete rows count = " + clearData);
-        Toast.makeText(getActivity(), "Clear DataBase", Toast.LENGTH_SHORT).show();
         correctDB.close();
 
     }
@@ -215,7 +215,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
         contentValues.put(CorrectDB.KEY_VALUE1, seekBar.getProgress());
 
         db.insert(CorrectDB.TABLE_BTNS, null, contentValues);
-        Toast.makeText(getActivity(), "Saved data", Toast.LENGTH_SHORT).show();
         correctDB.close();
     }
 

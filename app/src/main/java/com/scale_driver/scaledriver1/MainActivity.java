@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences sp;
     BtnsFragment btnsFragment;
     SetUpBtnsFragment setUpBtnsFragment;
-    Boolean fragmentVisible = false;
     FragmentTransaction fTrans;
     private static final String TAG = "mLog";
     protected static final int REQUEST_ENABLE_BT = 2;
@@ -118,19 +117,16 @@ public class MainActivity extends AppCompatActivity
         fTrans = getFragmentManager().beginTransaction();
 
 
-        if(showBtns && !fragmentVisible) {
-            fragmentVisible = true;
-            fTrans.add(R.id.fragCont2, btnsFragment);
-        } else if (showBtns && fragmentVisible){
+        if(showBtns){
+            if(!btnsFragment.isAdded())
+                fTrans.add(R.id.fragCont2, btnsFragment);
             fTrans.detach(btnsFragment);
             fTrans.attach(btnsFragment);
-
         }
-        else if (!showBtns && fragmentVisible){
-            fragmentVisible = false;
+
+        if(!showBtns && btnsFragment.isAdded()){
             fTrans.remove(btnsFragment);
         }
-
          fTrans.commit();
 
     }
