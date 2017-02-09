@@ -2,28 +2,24 @@ package com.scale_driver.scaledriver1.btnsHandle;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.scale_driver.scaledriver1.R;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +27,7 @@ import java.util.Set;
 public class BtnsFragment extends Fragment {
 
     public static final int BTN_NUMS = 10;
+    public static final String TAG = "mLog";
 
     BtnListener mBtnListener;
     ArrayAdapter<String> mAdapter;
@@ -38,11 +35,12 @@ public class BtnsFragment extends Fragment {
     SQLiteDatabase db;
     CheckBox cbSetButns;
     CheckBox cbCheckButns;
+    SharedPreferences sp;
+    int btnNums;
 
-    Map<Integer, String> hashMap = new HashMap<>();
+    SparseArray<String> btnNamesArray = new SparseArray<String>();
 
-    private static String[] mContacts = new String[BTN_NUMS];
-            //{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
+    private static String[] mContacts;
     GridView gvMain;
 
     @Override
@@ -67,8 +65,6 @@ public class BtnsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        for(int i = 0; i < BTN_NUMS; i++)
-            mContacts[i] = "";
     }
 
     @Nullable
@@ -81,6 +77,7 @@ public class BtnsFragment extends Fragment {
 
         cbSetButns = (CheckBox) v.findViewById(R.id.cbSetBut);
         cbCheckButns = (CheckBox) v.findViewById(R.id.cbCheckBut);
+        Log.d(TAG, "butNums = " + btnNums);
 
         mAdapter = new ArrayAdapter<String>(getActivity(), R.layout.item, R.id.tvText, mContacts);
         gvMain = (GridView) v.findViewById(R.id.gridView1);
@@ -89,11 +86,11 @@ public class BtnsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (cbSetButns.isChecked()) {
-                    mBtnListener.SetUpBtnClicked(i+1,mAdapter.getItem(i),getBtnValue(i+1));
+                    mBtnListener.SetUpBtnClicked(i + 1, mAdapter.getItem(i), getBtnValue(i + 1));
                     Log.d("mLog", "number of items: " + mAdapter.getCount());
                 } else {
                     //Log.d("mLog", "position = " + i + ", btnvalue = " + getBtnValue(i + 1));
-                    mBtnListener.CorrectBtnClicked(String.valueOf(getBtnValue(i+1)));
+                    mBtnListener.CorrectBtnClicked(String.valueOf(getBtnValue(i + 1)));
                 }
             }
         });
@@ -117,7 +114,12 @@ public class BtnsFragment extends Fragment {
         return btnValue;
     }
 
-    private void btnNameUpdate(){
+    private void btnNameUpdate() {
+
+        sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        btnNums = Integer.parseInt(sp.getString("btnNums", "no data"));
+        mContacts = new String[btnNums];
+
         correctDB = new CorrectDB(getActivity());
         db = correctDB.getWritableDatabase();
 
@@ -128,25 +130,23 @@ public class BtnsFragment extends Fragment {
             int btnNameIndex = cursor.getColumnIndex(CorrectDB.KEY_NAME);
 
             do {
-                hashMap.put(cursor.getInt(btnIdIndex), cursor.getString(btnNameIndex));
-//                Log.d("mLog", "btnId = " + cursor.getInt(btnIdIndex) + ", btnName = " + cursor.getString(btnNameIndex));
+                btnNamesArray.put(cursor.getInt(btnIdIndex), cursor.getString(btnNameIndex));
             } while (cursor.moveToNext());
         }
-//        Log.d("mLog", "0 rows in base");
 
         cursor.close();
         correctDB.close();
 
-        Set<Map.Entry<Integer, String>> set = hashMap.entrySet();
 
-        for (Map.Entry<Integer, String> item : set) {
-            int x = item.getKey() - 1;
-            if (x < BTN_NUMS){
-               mContacts[x] = item.getValue();
+        for (int i = 0; i < btnNums; i++)
+            mContacts[i] = "";
+
+        for (int i = 0; i < btnNamesArray.size(); i++) {
+            int key = btnNamesArray.keyAt(i) - 1;
+            if (i < btnNums) {
+                mContacts[key] = btnNamesArray.valueAt(i);
             }
-//            Log.d("mLog", "id = " + item.getKey() + ", value = " + item.getValue());
         }
-
     }
 
 }

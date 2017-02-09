@@ -116,17 +116,22 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Boolean showBtns = preference.getBoolean("showBtns", true);
         fTrans = getFragmentManager().beginTransaction();
-        fTrans.addToBackStack("");
+
 
         if(showBtns && !fragmentVisible) {
             fragmentVisible = true;
             fTrans.add(R.id.fragCont2, btnsFragment);
+        } else if (showBtns && fragmentVisible){
+            fTrans.detach(btnsFragment);
+            fTrans.attach(btnsFragment);
+
         }
         else if (!showBtns && fragmentVisible){
             fragmentVisible = false;
             fTrans.remove(btnsFragment);
         }
-        fTrans.commit();
+
+         fTrans.commit();
 
     }
     @Override

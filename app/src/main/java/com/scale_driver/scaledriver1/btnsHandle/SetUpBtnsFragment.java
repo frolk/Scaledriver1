@@ -38,7 +38,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
     int correctvalue;
     TextView seekText;
     EditText etName;
-    Map<Integer, String> hashMap = new HashMap<>();
     SetUpbtns msetUpbtns;
 
 
@@ -246,7 +245,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
             int value1Index = cursor.getColumnIndex(CorrectDB.KEY_VALUE1);
 
             do {
-                hashMap.put(cursor.getInt(idIndex), cursor.getString(nameIndex));
                 Log.d(TAG, "id = " + cursor.getInt(idIndex) + ", bntId = " + cursor.getInt(btnIdIndex)
                         + ", name = " + cursor.getString(nameIndex) + ", value = " + cursor.getInt(value1Index));
             } while (cursor.moveToNext());
