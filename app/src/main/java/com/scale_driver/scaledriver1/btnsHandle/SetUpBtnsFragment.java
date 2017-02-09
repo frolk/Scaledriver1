@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,11 +41,11 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
     EditText etName;
     SetUpbtns msetUpbtns;
 
-
     public interface SetUpbtns {
         public void setUpbtnsCloseFrag();
         public void updateBtnFrag();
         public void CorrectBtnClicked(String s);
+        public void ClearBase();
 
     }
 
@@ -73,7 +74,10 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         View v = inflater.inflate(R.layout.set_up_btns_fragment, null);
+
+
         etName = (EditText) v.findViewById(R.id.etBtnName);
         btnSave = (Button) v.findViewById(R.id.btnSaveData);
         btnSave.setOnClickListener(this);
@@ -172,13 +176,16 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btnClear:
-                clearBase();
+                msetUpbtns.ClearBase();
                 msetUpbtns.updateBtnFrag();
                 msetUpbtns.setUpbtnsCloseFrag();
                 break;
 
         }
     }
+
+
+
 
     private void clearBase() {
         db = correctDB.getWritableDatabase();

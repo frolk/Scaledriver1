@@ -73,6 +73,17 @@ public class BtnsFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.btnfragment, null);
 
+
+
+        //String.valueOf(getArguments().getInt(CorrectDB.KEY_BTNID));
+        //Log.d(TAG, "clear = " + getArguments().getInt(CorrectDB.CLEAR_BASE));
+
+        if(CorrectDB.needToClear){
+            clearBase();
+            CorrectDB.needToClear = false;
+        }
+
+
         btnNamesArray = new SparseArray<String>();
         btnNameUpdate();
 
@@ -148,6 +159,13 @@ public class BtnsFragment extends Fragment {
                 mContacts[key] = btnNamesArray.valueAt(i);
             }
         }
+    }
+
+    private void clearBase() {
+        db = correctDB.getWritableDatabase();
+        int clearData = db.delete(CorrectDB.TABLE_BTNS, null, null);
+        Log.d(TAG, "delete rows count = " + clearData);
+        correctDB.close();
     }
 
 }

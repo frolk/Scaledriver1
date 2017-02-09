@@ -1,5 +1,6 @@
 package com.scale_driver.scaledriver1;
 
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.scale_driver.scaledriver1.ble_handle.BleUtils;
 import com.scale_driver.scaledriver1.ble_handle.ScannerFragment;
 import com.scale_driver.scaledriver1.btnsHandle.BtnsFragment;
+import com.scale_driver.scaledriver1.btnsHandle.ConfirmDialog;
 import com.scale_driver.scaledriver1.btnsHandle.CorrectDB;
 import com.scale_driver.scaledriver1.btnsHandle.SetUpBtnsFragment;
 import com.scale_driver.scaledriver1.settings.SettingsActivity;
@@ -43,7 +45,8 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        ScannerFragment.OnDeviceSelectedListener, BtnsFragment.BtnListener, SetUpBtnsFragment.SetUpbtns {
+        ScannerFragment.OnDeviceSelectedListener, BtnsFragment.BtnListener,
+        SetUpBtnsFragment.SetUpbtns, ConfirmDialog.ConfirmListerner {
     EditText etSend;
     private TextView tvData;
     Button btn_send;
@@ -321,6 +324,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void ClearBase() {
+        new ConfirmDialog().show(getFragmentManager(), "ivan");
+
+    }
+
+    @Override
     public void setUpbtnsCloseFrag() {
         fTrans = getFragmentManager().beginTransaction();
         fTrans.detach(setUpBtnsFragment);
@@ -336,4 +345,11 @@ public class MainActivity extends AppCompatActivity
         fTrans.commit();
 
     }
+
+    @Override
+    public void onConfirmPositiveClick(DialogFragment dialog) {
+        CorrectDB.needToClear = true;
+        updateBtnFrag();
+    }
+
 }

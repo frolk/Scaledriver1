@@ -16,7 +16,10 @@ public class CorrectDB extends SQLiteOpenHelper {
     public static final String KEY_NAME = "name";
     public static final String KEY_VALUE1 = "value1";
     public static final String KEY_VALUE2 = "value2";
+    public static Boolean needToClear = false;
 
+
+    public static final String  CLEAR_BASE = "clear";
 
 
     public CorrectDB(Context context) {
