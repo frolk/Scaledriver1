@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -27,24 +29,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
-public class SetUpBtnsFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
+public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
+                                                           View.OnLongClickListener,
+                                            CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "mLog";
     SeekBar seekBar;
     String currentBtn;
     String currentBtnName;
     String currentBtnValue1;
+    CheckBox cbKgPlus,cbKgMinus,cbPerMinus;
     Button btnInc, btnDec, btnSave, btnClose, btnClear;
     int correctvalue;
     TextView seekText;
     EditText etName;
     SetUpbtns msetUpbtns;
 
+    @Override
+    public void onCheckedChanged(CompoundButton cb, boolean b) {
+        switch (cb.getId()){
+
+            case R.id.kg_plus:
+                if(cb.isChecked()) cbKgMinus.setEnabled(false);
+                else cbKgMinus.setEnabled(true);
+                break;
+            case R.id.kg_minus:
+                if(cb.isChecked()) cbKgPlus.setEnabled(false);
+                else cbKgPlus.setEnabled(true);
+                break;
+            case R.id.per_minus:
+
+                break;
+        }
+    }
+
     public interface SetUpbtns {
         public void setUpbtnsCloseFrag();
+
         public void updateBtnFrag();
+
         public void CorrectBtnClicked(String s);
+
         public void ClearBase();
 
     }
@@ -82,6 +107,14 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
         btnSave = (Button) v.findViewById(R.id.btnSaveData);
         btnSave.setOnClickListener(this);
 
+        cbKgPlus = (CheckBox) v.findViewById(R.id.kg_plus);
+        cbKgMinus = (CheckBox) v.findViewById(R.id.kg_minus);
+        cbPerMinus = (CheckBox) v.findViewById(R.id.per_minus);
+        cbKgPlus.setOnCheckedChangeListener(this);
+        cbKgMinus.setOnCheckedChangeListener(this);
+        cbPerMinus.setOnCheckedChangeListener(this);
+
+
         btnClear = (Button) v.findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
         btnClear.setOnLongClickListener(this);
@@ -103,7 +136,8 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 correctvalue = i;
                 seekText.setText(String.valueOf(correctvalue));
-                msetUpbtns.CorrectBtnClicked("$" + String.valueOf(i) + "&");
+                //msetUpbtns.CorrectBtnClicked("$" + String.valueOf(i) + "&");
+                sendCorValue();
             }
 
             @Override
@@ -124,11 +158,20 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
         Log.d(TAG, "From SetUpbtns: btnId = " + currentBtn + ", btnName = " + currentBtnName + ", btnValue1 = " + currentBtnValue1);
 
 
-
         return v;
 
     }
 
+    private void sendCorValue() {
+        String befSign = "";
+        String aftSign = "";
+        if(cbKgPlus.isChecked()){
+            befSign = "+";
+        } else if (cbKgMinus.isChecked()) {
+            befSign = "-";
+        }
+        msetUpbtns.CorrectBtnClicked("$" + befSign + String.valueOf(correctvalue) + "&");
+    }
 
     @Override
     public void onResume() {
@@ -147,7 +190,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
         }
         return false;
     }
-
 
     @Override
     public void onClick(View view) {
@@ -172,7 +214,7 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btnClose:
-                 msetUpbtns.setUpbtnsCloseFrag();
+                msetUpbtns.setUpbtnsCloseFrag();
                 break;
 
             case R.id.btnClear:
@@ -183,9 +225,6 @@ public class SetUpBtnsFragment extends Fragment implements View.OnClickListener,
 
         }
     }
-
-
-
 
     private void clearBase() {
         db = correctDB.getWritableDatabase();

@@ -18,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -39,9 +40,12 @@ import com.scale_driver.scaledriver1.btnsHandle.BtnsFragment;
 import com.scale_driver.scaledriver1.btnsHandle.ConfirmDialog;
 import com.scale_driver.scaledriver1.btnsHandle.CorrectDB;
 import com.scale_driver.scaledriver1.btnsHandle.SetUpBtnsFragment;
+import com.scale_driver.scaledriver1.dfu.DfuActivity;
 import com.scale_driver.scaledriver1.settings.SettingsActivity;
 
 import java.util.UUID;
+
+import static com.scale_driver.scaledriver1.R.layout.dfu;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     public String tx_data;
     Button btn_connect;
     private BluetoothDevice mDevice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity
         tvData = (TextView) findViewById(R.id.tvData);
 
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -112,6 +118,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -120,25 +127,27 @@ public class MainActivity extends AppCompatActivity
         fTrans = getFragmentManager().beginTransaction();
 
 
-        if(showBtns){
-            if(!btnsFragment.isAdded())
+        if (showBtns) {
+            if (!btnsFragment.isAdded())
                 fTrans.add(R.id.fragCont2, btnsFragment);
             fTrans.detach(btnsFragment);
             fTrans.attach(btnsFragment);
         }
 
-        if(!showBtns && btnsFragment.isAdded()){
+        if (!showBtns && btnsFragment.isAdded()) {
             fTrans.remove(btnsFragment);
         }
-         fTrans.commit();
+        fTrans.commit();
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -153,6 +162,7 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -172,6 +182,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     public void onConnectClicked(View view) {
         if (isBLEEnabled()) {
             if (!mDeviceConnected) {
@@ -183,9 +194,9 @@ public class MainActivity extends AppCompatActivity
                 mDeviceConnected = false;
             }
 
-
         } else showBLEDialog();
     }
+
     private void showDeviceScanningDialog(final UUID filter) {
         runOnUiThread(new Runnable() {
             @Override
@@ -195,17 +206,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
     // Check either BLE enabled or not
     protected boolean isBLEEnabled() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         final BluetoothAdapter adapter = bluetoothManager.getAdapter();
         return adapter != null && adapter.isEnabled();
     }
+
     //Ask user to turn bluetooth on
     protected void showBLEDialog() {
         final Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
     }
+
     // implemented ScannerFragment method getting info about selected device
     @Override
     public void onDeviceSelected(BluetoothDevice device, String name) {
@@ -215,10 +229,12 @@ public class MainActivity extends AppCompatActivity
         String deviceaddress = mDevice.getAddress();
         mService.connect(deviceaddress);
     }
+
     @Override
     public void onDialogCanceled() {
 
     }
+
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder rawBinder) {
@@ -230,6 +246,7 @@ public class MainActivity extends AppCompatActivity
                 finish();
             }
         }
+
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mService = null;
@@ -282,24 +299,27 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
+
     private void service_init() {
         Intent bindIntent = new Intent(this, UartService.class);
         bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
         LocalBroadcastManager.getInstance(this).registerReceiver(UartBroadcastReceiver, BleUtils.makeGattUpdateIntentFilter());
     }
+
     public void sendClick(View view) {
 
         etSend = (EditText) findViewById(R.id.etSend);
         String data = etSend.getText().toString();
 
-        if(!data.isEmpty()) {
+        if (!data.isEmpty()) {
             BleUtils.sendMsgBle(this, mService, data, mDeviceConnected);
         } else {
             Toast.makeText(this, "Необходимо ввести текст", Toast.LENGTH_SHORT).show();
         }
 
     }
-    public void showSettings(){
+
+    public void showSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
@@ -318,6 +338,7 @@ public class MainActivity extends AppCompatActivity
         fTrans.commit();
 
     }
+
     @Override
     public void CorrectBtnClicked(String s) {
         BleUtils.sendMsgBle(this, mService, s, mDeviceConnected);
@@ -352,4 +373,8 @@ public class MainActivity extends AppCompatActivity
         updateBtnFrag();
     }
 
+    public void onDfuActivityStart(View view) {
+        Intent intent = new Intent(this, DfuActivity.class);
+        startActivity(intent);
+    }
 }

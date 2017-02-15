@@ -27,4 +27,10 @@
     <string name="incSign"><![CDATA[>]]></string>
     <string name="saveData">Сохранить</string>
     <string name="close">Закрыть</string>
+    <string name="yes">да</string>
+    <string name="no">нет</string>
+    <string name="ok">ok</string>
+    <string name="cancel">Отмена</string>
+    <string name="download_browser">Загрузите файловый менеджер с play market</string>
+    <string name="no_application">no application</string>
 </resources>

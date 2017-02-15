@@ -33,6 +33,13 @@
                     android:layout_gravity="center"
                     android:onClick="onConnectClicked"
                     android:text="@string/btn_connect" />
+                <Button
+                    android:id="@+id/dfu_open_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:onClick="onDfuActivityStart"
+                    android:text="dfu" />
 
             <TextView
 

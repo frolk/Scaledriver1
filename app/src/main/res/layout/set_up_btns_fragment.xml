@@ -1,87 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
 
-        <LinearLayout
+        <CheckBox
+            android:id="@+id/kg_plus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+кг"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_margin="10dp"
+
+            />
+
+        <CheckBox
+            android:id="@+id/kg_minus"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-кг"
+            android:layout_margin="10dp"/>
+
+        <CheckBox
+            android:id="@+id/per_minus"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:textSize="20sp"
+            android:layout_height="wrap_content"
+            android:text="-%"
+            android:layout_margin="10dp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnDec"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/decSign" />
+
+        <TextView
+            android:id="@+id/seekText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnInc"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/incSign" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="1000" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:text="Очистить" />
 
-            <Button
-                android:id="@+id/btnDec"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:text="@string/decSign" />
-
-            <TextView
-                android:id="@+id/seekText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textAlignment="center"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/btnInc"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:text="@string/incSign" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:text="Закрыть" />
 
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="1000" />
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnSaveData"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:text="Сохранить" />
 
+        <EditText
+            android:id="@+id/etBtnName"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp" />
 
-            <Button
-                android:id="@+id/btnClear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Очистить" />
-
-            <Button
-                android:id="@+id/btnClose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Закрыть" />
-
-            <Button
-                android:id="@+id/btnSaveData"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Сохранить" />
-
-            <EditText
-                android:layout_marginStart="10dp"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/etBtnName"/>
-
-        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
 
 
